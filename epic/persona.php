@@ -7,7 +7,7 @@
 	<body>
 
 		<h1>NAME:</h1>
-		<P>NPaul Baca</P>
+		<P>Paul Baca</P>
 	</body>
 </
 
