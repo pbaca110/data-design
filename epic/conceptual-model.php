@@ -16,6 +16,7 @@
 			<li>productDescription</li>
 			<li>productName</li>
 		<li>productPrice</li>
+			<li>productDatetime</li>
 		</ul>
 
 
