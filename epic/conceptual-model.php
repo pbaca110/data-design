@@ -9,34 +9,39 @@
 	</body>
 	<main>
 
-		<h1>main page:</h1>
+		<h1>product:</h1>
+
 		<ul>
-			<li>log in </li>
-			<li>description of website</li>
-		<li> list of hot items on sale </li>
-			<li>toolbar</li>
+			<li>productid(primary)</li>
+			<li>productDescription</li>
+			<li>productName</li>
+		<li>productPrice</li>
 		</ul>
-		<h1>Profile:</h1>
+
+
+			<h1>Profile:</h1>
+			<ul>
+				<li> profileId(primary key)</li>
+				<li>profileHash (for account password)</li>
+				<li>profileSalt (for account password)</li>
+				<li>profileEmail</li>
+				<li>profileAtHandle</li>
+
+
+			</ul>
+			<h1>Favorite</h1>
 		<ul>
-			<li>link paypal</li>
-			<li>about yourself</li>
-			<li>featured items for sale</li>
-			<li>like profield (foreign key)</li>
+			<li>favoriteProfileid(foreign key)</li>
 
-		</ul>
-		<h1>marketplace</h1>
-		<ul>
-			<li>search bar</li>
-			<li>image of products</li>
-			<li>buy profield (foreign key)</li>
-			<li>seller username</li>
+				<li>favoriteProductid(foreign key)</li>
+				<li>favoriteDate</li>
+
+			</ul>
 
 
 
 
 
-
-		</ul>
 
 
 
