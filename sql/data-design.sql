@@ -15,6 +15,7 @@ PRIMARY KEY(profileId)
 );
 
 CREATE TABLE product (
+	productDate  DATETIME NOT NULL,
 	productDescription INT UNSIGNED NOT NULL,
 	productId INT UNSIGNED AUTO_INCREMENT NOT NULL,
 productName VARCHAR(140) NOT NULL,
