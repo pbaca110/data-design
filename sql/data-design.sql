@@ -9,7 +9,7 @@ profileDescription VARCHAR(128) UNIQUE NOT NULL,
 profileHash CHAR(128) NOT NULL,
 profileSalt CHAR(64) NOT NULL,
 profileEmail VARCHAR(128) UNIQUE NOT NULL,
-	profileActivationToken CHAR(32),
+profileActivationToken CHAR(32),
 PRIMARY KEY(profileId)
 );
 

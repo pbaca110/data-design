@@ -26,6 +26,7 @@
 				<li>profileSalt (for account password)</li>
 				<li>profileEmail</li>
 				<li>profileAtHandle</li>
+				<li>profileAcitvationToken</li>
 
 
 			</ul>
