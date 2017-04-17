@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS profile;
 
 CREATE TABLE profile (profileId INT UNSIGNED AUTO_INCREMENT NOT NULL,
 	profileActivationToken CHAR(32),
+	profileAtHandle VARCHAR(32)NOT NULL,
 	profileEmail VARCHAR(128) UNIQUE NOT NULL,
 	profileDescription VARCHAR(128) UNIQUE NOT NULL,
 profileHash CHAR(128) NOT NULL,
