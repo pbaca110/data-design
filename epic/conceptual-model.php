@@ -27,6 +27,7 @@
 				<li>profileEmail</li>
 				<li>profileAtHandle</li>
 				<li>profileAcitvationToken</li>
+				<li>profilePhone</li>
 
 
 			</ul>
