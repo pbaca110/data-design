@@ -19,7 +19,6 @@ CREATE TABLE product (
 	productDescription INT UNSIGNED NOT NULL,
 	productId INT UNSIGNED AUTO_INCREMENT NOT NULL,
 productName VARCHAR(140) NOT NULL,
-productPrice VARCHAR(4),
 INDEX(productId),
 FOREIGN KEY(productId) REFERENCES profile(profileId),
 PRIMARY KEY(productId)
