@@ -9,6 +9,7 @@ profileDescription VARCHAR(128) UNIQUE NOT NULL,
 profileHash CHAR(128) NOT NULL,
 profileSalt CHAR(64) NOT NULL,
 profileEmail VARCHAR(128) UNIQUE NOT NULL,
+	profileActivationToken CHAR(32),
 PRIMARY KEY(profileId)
 );
 
@@ -23,7 +24,7 @@ PRIMARY KEY(productId)
 );
 
 
-CREATE TABLE 'favorite' (
+CREATE TABLE favorite (
 favoriteProfileid INT UNSIGNED NOT NULL,
 favoriteProductid INT UNSIGNED NOT NULL ,
 favoriteDate DATETIME(6) NOT NULL,
