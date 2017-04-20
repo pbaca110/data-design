@@ -44,7 +44,7 @@ class Profile implements \JsonSerializable {
 	 * accessor
 	 * @return
 	 **/
-	public function getprofileId(): int {
+	public function getprofileId(): void {
 		return ($this->profileId);
 	}
 
@@ -54,24 +54,26 @@ class Profile implements \JsonSerializable {
 	 * @throws |RangeException if $newprofileId is not positive
 	 * @throws |TypeError if $newprofileId is not an integer
 	 **/
-	public function setprofileId(?int $newprofileId):
-	void {
+	public function setprofileId(?int $newprofileId): void {
 		if($newprofileId === null) {
 			$this->profileId = null;
 			return;
 		}
+
 		if($newprofileId <= 0) {
 			throw(new\RangeException("profile id is not positive"));
 		}
+
 		$this->profileId = $newprofileId;
 	}
+
 	/**
 	 * accessor
 	 * @return
 	 **/
-/public function getprofileAcitvationToken(): string {
-	return ($this->profileActivationToken);
-}
+	public function getprofileAcitvationToken(): string {
+		return ($this->profileActivationToken);
+	}
 	/**
 	 * mutator
 	 **/
@@ -83,27 +85,27 @@ class Profile implements \JsonSerializable {
 	 **/
 	public function setprofileActivationToken(string $newprofileActivationToken): void {
 		$newprofileActivationToken = trim($newprofileActivationToken);
-
-		$newprofileActivationToken = filter_var($newprofileActivationToken,
-
-			FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		$newprofileActivationToken = filter_var($newprofileActivationToken, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 
 		if(empty($newprofileActivationToken) === true) {
-
 			throw(new \InvalidArgumentException("profile contentis empty or insecure"));
 		}
 
-		if(strlen(($newprofileActivationToken) > 32){throw (new \RangeException("profile content too large"));
-	}
+		if(strlen($newprofileActivationToken) > 32) {
+			throw (new \RangeException("profile content too large"));
+		}
+
 		$this->profileActivationToken = $newprofileActivationToken;
 	}
+
 	/**
 	 * accessor
 	 * @return
 	 **/
-/public function getprofileAtHandle(): string {
-	return ($this->profileAtHanadle);
-}
+	public function getprofileAtHandle(): string {
+		return ($this->profileAtHanadle);
+	}
+
 	/**
 	 * mutator
 	 **/
@@ -116,31 +118,26 @@ class Profile implements \JsonSerializable {
 	public function setprofileAtHandle(string $newprofileAtHandle): void {
 
 		$newprofileAtHandle = trim($newprofileAtHandle);
-
-		$newprofileAtHandle = filter_var($newprofileAtHandle,
-
-			FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-
+		$newprofileAtHandle = filter_var($newprofileAtHandle, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 
 		if(empty($newprofileAtHandle) === true) {
-
 			throw(new \InvalidArgumentException("profile content is empty or insecure"));
 		}
 
 		if(strlen($newprofileAtHandle) > 32) {
-
 			throw(new \RangeException("profile content too large"));
 		}
 
-		this->$this->profileAtHanadle = $newprofileAtHandle
-				}
+		$this->profileAtHandle = $newprofileAtHandle;
+	}
+
 	/**
 	 * accessor
 	 * @return
 	 **/
-/public function getprofileEmail(): string {
-	return ($this->profileEmail);
-}
+	public function getprofileEmail(): string {
+		return ($this->profileEmail);
+	}
 	/**
 	 * mutator
 	 **/
@@ -164,84 +161,91 @@ class Profile implements \JsonSerializable {
 		}
 	}
 
-	public function setprofileHash(string $newprofileHash)
-	  return($this->/**
- * @return string
- */public function getProfileHash(): string {
-	return $this->profileHash);
-}
-/**@param string $newprofileHash new value of content
- * @throws \InvalidArgumentException if $newprofileHash is not a string or not insecure
- * @throws \RangeException if $newprofileHash is >128 characters
- * @throws \TypeError id $newprofileHash is not a string
- */
-		public function setprofileHash(string $newprofileHash): void {
-			$newprofileHash = trim($newprofileHash);
-			$newprofileHash = filter_var($newprofileHash, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-			if(empty($newprofileHash) === true) {
-				throw(new \InvalidArgumentException("profile conent is empty or insecure"));
-			}
-			if(strlen($newprofileHash) > 128) {
-				throw(new \RangeException("profile content too large"));
-			}
-			$this->profileHash = $newprofileHash;
+
+	/**
+	 * accessor)
+	 *
+	 *
+	 * public function setprofileHash(string $newprofileHash)
+	 * return($this->/**
+	 * @return string
+	 */
+	public function getProfileHash(): string {
+		return ($this->profileHash);
+	}
+
+	/**
+	 * mutator
+	 */
+
+
+	/**@param string $newprofileHash new value of content
+	 * @throws \InvalidArgumentException if $newprofileHash is not a string or not insecure
+	 * @throws \RangeException if $newprofileHash is >128 characters
+	 * @throws \TypeError id $newprofileHash is not a string
+	 */
+	public function setprofileHash(string $newprofileHash): void {
+		$newprofileHash = trim($newprofileHash);
+		$newprofileHash = filter_var($newprofileHash, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($newprofileHash) === true) {
+			throw(new \InvalidArgumentException("profile conent is empty or insecure"));
 		}
-		/**
-		 * accessor
-		 * @return
-		 **/
-		public function getprofileSalt(): string {
-			return ($this->profileSalt);
+		if(strlen($newprofileHash) > 128) {
+			throw(new \RangeException("profile content too large"));
 		}
-  /**@param string $newprofileSalt new value of content
-	* @throws \InvalidArgumentException if $newprofileSalt is not a string or not insecure
-	* @throws \RangeException if $newprofileSalt is >128 characters
-	* @throws \TypeError id $newprofileSalt is not a string
-	*/
-  public function setprofileSalt(string $newprofileSalt): void {
-	  $newprofileSalt = trim($newprofileSalt);
-	  $newprofileSalt = filter_var($newprofileSalt, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-	  if(empty($newprofileSalt) === true) {
-		  throw(new(\InvalidArgumentException("profile Salt is empty or insecure"));
-	  }
-	  if(strlen($newprofileSalt) > 64) {
-		  throw new(\RangeException("profile Salt is too large"));
-	  }
+		$this->profileHash = $newprofileHash;
+	}
 
-	  $this->profileSalt = $newprofileSalt}
+	/**
+	 * accessor
+	 * @return
+	 **/
+	public function getprofileSalt(): string {
+		return ($this->profileSalt);
+	}
 
-  		/**
-		 * accessor
-		 * @return
-		 **/
-  		public function getprofilePhone(): string {
-			return ($this->profilePhone);
+	/**@param string $newprofileSalt new value of content
+	 * @throws \InvalidArgumentException if $newprofileSalt is not a string or not insecure
+	 * @throws \RangeException if $newprofileSalt is >128 characters
+	 * @throws \TypeError id $newprofileSalt is not a string
+	 */
+	public function setprofileSalt(string $newprofileSalt): void {
+		$newprofileSalt = trim($newprofileSalt);
+		$newprofileSalt = filter_var($newprofileSalt, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($newprofileSalt) === true) {
+			throw(new\InvalidArgumentException("profile Salt is empty or insecure"));
+		}
+		if(strlen($newprofileSalt) > 64) {
+			throw (new\RangeException("profile Salt is too large"));
 		}
 
-  /**@param string $newprofilePhone new value of content
-	* @throws \InvalidArgumentException if $newprofilePhone is not a string or not insecure
-	* @throws \RangeException if $newprofilePhone is >128 characters
-	* @throws \TypeError id $newprofilePhone is not a string
-	*/
-  public function setprofilePhone(string $newprofilePhone): void {
-	  $newprofilePhone = trim($newprofilePhone);
-	  $newprofilePhone = filter_var($newprofilePhone, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-	  if(empty($newprofilePhone) === true) {
-		  throw(new \InvalidArgumentException("profile phone is empty or insecure"));
-	  }
-	  if(strlen($newprofilePhone) > 32) {
-		  throw(new \RangeException("profile phone is too large"));
-	  }
-	  $this->profilePhone = $newprofilePhone
-}
+		$this->profileSalt = $newprofileSalt;
+	}
+
+	/**
+	 * accessor
+	 * @return
+	 **/
+	public function getprofilePhone(): string {
+		return ($this->profilePhone);
+	}
+
+	/**@param string $newprofilePhone new value of content
+	 * @throws \InvalidArgumentException if $newprofilePhone is not a string or not insecure
+	 * @throws \RangeException if $newprofilePhone is >128 characters
+	 * @throws \TypeError id $newprofilePhone is not a string
+	 */
+	public function setprofilePhone(string $newprofilePhone): void {
+		$newprofilePhone = trim($newprofilePhone);
+		$newprofilePhone = filter_var($newprofilePhone, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($newprofilePhone) === true) {
+			throw(new \InvalidArgumentException("profile phone is empty or insecure"));
+		}
+		if(strlen($newprofilePhone) > 32) {
+			throw(new \RangeException("profile phone is too large"));
+		}
+		$this->profilePhone = $newprofilePhone;
+	}
 
 
-
-
-
-
-
-
-
-
-   // this closes the class Profile
+} // this closes the class Profile
