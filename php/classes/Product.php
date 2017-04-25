@@ -1,5 +1,5 @@
 <?php
-
+require_once("autoload.php");
 class product implements \JsonSerializable {
 
 	/**
@@ -140,6 +140,25 @@ class product implements \JsonSerializable {
 }
 
 
-
+/**
+ * constructor for this Tweet
+ *
+ * @param int|null $newProductId id of this product or null if a new productId
+ * @param string $newproductName name of the  product that sent this product
+ * @param string $newProductDescription string containing actual product data
+ * @param \DateTime|string|null $newProductDate date and time Tweet was sent or null if set to current date and time
+ * @throws \InvalidArgumentException if data types are not valid
+ * @throws \RangeException if data values are out of bounds (e.g., strings too long, negative integers)
+ * @throws \TypeError if data types violate type hints
+ * @throws \Exception if some other exception occurs
+ **/
+public
+function __construct(?int $newProductId, ?int $newproductName, string $newproductDescription, $newproductDate = null) {
+	try {
+		$this->setproductId($newProductId);
+		$this->setproductName($newproductName);
+		$this->setproductDescription($newproductDescription);
+		$this->setproductDate($newproductDate);
+	}
 
 

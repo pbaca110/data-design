@@ -1,5 +1,5 @@
 <?php
-
+require_once("autoload.php");
 class Profile implements \JsonSerializable {
 
 	// create state variables up here
@@ -248,4 +248,41 @@ class Profile implements \JsonSerializable {
 	}
 
 
-} // this closes the class Profile
+	/**
+	 * constructor for this Tweet
+	 *
+	 * @param int|null $newProfileId id of this product or null if a new productId
+	 * @param string $newActivationToken name of the  product that sent this product
+	 * 	 * @param string $newprofileEmail name of the  product that sent this product
+	 * 	 * @param string $newprofileHash name of the  product that sent this product
+	 * 	 * @param string $newprofileSalt name of the  product that sent this product
+	 * 	 * @param string $newprofilePhone name of the  product that sent this product
+	 * @param string $newprofileAtHandle string containing actual product data
+	 * @throws \InvalidArgumentException if data types are not valid
+	 * @throws \RangeException if data values are out of bounds (e.g., strings too long, negative integers)
+	 * @throws \TypeError if data types violate type hints
+	 * @throws \Exception if some other exception occurs
+	 **/
+	public
+	function __construct(?int $newProfileId, ?string $newActivationToken, string $newprofileEmail, ?string $newprofileHash,?string $newprofileSalt,?string $newprofilePhone, = null) {
+		try {
+			$this->setprofileId($newProfileId);
+			$this->setprofileActivationToken($newActivationToken);
+			$this->setprofileEmail($newprofileEmail);
+			$this->setprofileHash($newprofileHash);
+			$this->setprofileEmail($newprofileEmail);
+			$this->setprofileHash($newprofileHash);
+			$this->setprofileSalt($newprofileSalt);
+			$this->setprofilePhone($newprofilePhone);
+		}
+
+
+
+
+
+
+
+	} // this closes the class Profile
+
+
+
