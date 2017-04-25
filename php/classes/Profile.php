@@ -278,10 +278,23 @@ class Profile implements \JsonSerializable {
 
 
 
+/**
+ * gets the products by profile id
+ *
+ * @param \PDO $pdo PDO connection object
+ * @param int $profileId profile id to search by
+ * @return \SplFixedArray SplFixedArray of Tweets found
+ * @throws \PDOException when mySQL related errors occur
+ * @throws \TypeError when variables are not the correct data type
+ **/
 
-
-
-
+	public static function getproductByprofileId(\PDO $pdo, int $ProfileId) : \SPLFixedArray {
+			// sanitize the profile id before searching
+			if($ProfileId <= 0) {
+				throw(new \RangeException("profile id must be positive"));
+			}
+			$query = "SELECT profileId, profile, tweetContent, tweetDate FROM tweet WHERE tweetProfileId = :tweetProfileId";
+			$statement = $pdo->prepare($query);
 	} // this closes the class Profile
 
 

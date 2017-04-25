@@ -161,4 +161,127 @@ function __construct(?int $newProductId, ?int $newproductName, string $newproduc
 		$this->setproductDate($newproductDate);
 	}
 
+	/**
+	 * gets the Tweet by productId
+	*
+	 * @param \PDO $pdo PDO connection object
+	* @param int $productId tweet id to search for
+	 * @return product|null Tweet found or null if not found
+	* @throws \PDOException when mySQL related errors occur
+	* @throws \TypeError when variables are not the correct data type
+	**/
 
+ **/
+	public static function getproductByproductId(\PDO $pdo, int $productId) : ?product {
+		if($productId <= 0) {
+			throw(new \PDOException("product id is not positive"));
+		}
+		$query = "SELECT productId, productName, productDescription, productDate FROM product WHERE productId = :productId";
+		$statement = $pdo->prepare($query);
+		$parameters = ["productId" => $productId];
+		$statement->execute($parameters);
+		try {
+			$product= null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$product = new product($row["productid"], $row["productName"], $row["productDescription"], $row["productDate"]);
+			}
+		} catch(\Exception $exception) {
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return($product);
+	}
+
+/**
+ * inserts this product into mySQL
+ *
+ * @param \PDO $pdo PDO connection object
+ * @throws \PDOException when mySQL related errors occur
+ * @throws \TypeError if $pdo is not a PDO connection object
+ **/
+	public function insert(\PDO $pdo) : void {
+		if($this->productId !== null) {
+			throw(new \PDOException("not a new product"));
+		}
+		//
+		$query = "INSERT INTO product(productId, productName, productDate,productDescription) VALUES(:productId,productName,productDescription,productDate)";
+		$statement = $pdo->prepare($query);
+		// bind the member r to the place holders in the template
+		$formattedDate = $this->productDate->format("Y-m-d H:i:s");
+		$parameters = ["productId" => $this->productId, "productDescription" => $this->productDescription, "favoriteDate" => $formattedDate];
+		$statement->execute($parameters);
+		// update the null tweetId with what mySQL just gave us
+		$this->productId = intval($pdo->lastInsertId());
+	}
+	/**
+	 * deletes this product from mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function delete(\PDO $pdo) : void {
+		if($this->prodctId === null) {
+			throw(new \PDOException("unable to delete a product that does not exist"));
+		}
+		// create query template
+		$query = "DELETE FROM product WHERE productId = :productId";
+		$statement = $pdo->prepare($query);
+		$parameters = ["productId" => $this->prodctId];
+		$statement->execute($parameters);
+	}
+
+	/**
+	 * updates this product in mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function update(\PDO $pdo) : void {
+		if($this->producttId === null) {
+			throw(new \PDOException("unable to update a tweet that does not exist"));
+		}
+		$query = "UPDATE product SET productId = :productId, productDescription = :productDescription, producteDate = :productDate WHERE productDate = :productId";
+		$statement = $pdo->prepare($query);
+		$formattedDate = $this->prductDate->format("Y-m-d H:i:s");
+		$parameters = ["productId" => $this->productId, "productDescription" => $this->productDescription, "productDate" => $formattedDate, "productId" => $this->productId];
+		$statement->execute($parameters);
+	}
+
+
+	/**
+	 * gets the product by description
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param string $productContent tweet content to search for
+	 * @return \SplFixedArray SplFixedArray of Tweets found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public static function getproductByproductDescription(\PDO $pdo, string $productDescription) : \SPLFixedArray {
+		$productDescription = trim($productDescription);
+		$productDescription = filter_var($productDescription, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($productDescription) === true) {
+			throw(new \PDOException("productDescription is invalid"));
+		}
+		$query = "SELECT productId, productName, ProductDescription, productdate FROM product WHERE product.productDescription LIKE :productDescription";
+		$statement = $pdo->prepare($query);
+		$productDescription = "%$productDescription%";
+		$parameters = ["productDescription" => $productDescription];
+		$statement->execute($parameters);
+		$products = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$product = new Tweet($row["tweetId"], $row["tweetProfileId"], $row["tweetContent"], $row["tweetDate"]);
+				$products[S$products->key()] = $product;
+				$products->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return($products);
+	}

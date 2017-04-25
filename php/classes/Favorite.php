@@ -105,44 +105,11 @@ function __construct(?int $newfavoriteProfileId, ?int $newfavoriteProductId, str
 		$this->setfavoriteProductId($newfavoriteProductId);
 		$this->setfavoriteDate($newfavoriteDate);
 	}
-/**
- * gets the Tweet by profile id
- *
- * @param \PDO $pdo PDO connection object
- * @param int $tweetProfileId profile id to search by
- * @return \SplFixedArray SplFixedArray of Tweets found
- * @throws \PDOException when mySQL related errors occur
- * @throws \TypeError when variables are not the correct data type
- **/
-public static function getfavoritebyfavoriteProfileId(\PDO $pdo, int $favoriteProfileId): \SPLFixedArray {
-		// sanitize the profile id before searching
-		if($favoriteProfileId <= 0) {
-			throw(new \RangeException(" favorite profile id must be positive"));
-		}
-		$query = "SELECT favoriteProfileId, favoriteProductId, favoriteDate FROM favorite WHERE favoriteProfileId= :favoriteProfileId";
-		$statement = $pdo->prepare($query);
 
-		$parameters = ["favoriteProfileId" => $favoriteProfileId];
-		$statement->execute($parameters);
 
-		= $favoriteProfileId new \SplFixedArray($statement->rowCount());
-		$statement->setFetchMode(\PDO::FETCH_ASSOC);
-		while(($row = $statement->fetch()) !== false) {
-			try {
-				$favoriteProfileId = new favorite($row["favoriteProfileId"], $row["favoriteProductId"], $row["favoriteDate"]);
-				$favoriteProfileId [$favoriteProfileId->key()] = $favoriteProfileId;
-				$favoriteProfileId->next();
-			} catch(\Exception $exception) {
-				// if the row couldn't be converted, rethrow it
-				throw(new \PDOException($exception->getMessage(), 0, $exception));
-			}
-		}
-		return ($favoriteProfileId);
-	}
-			}
 
 /**
- * gets an array of tweets based on its date
+ * gets an array of favorites based on its date
  * (this is an optional get by method and has only been added for when specific edge cases arise in capstone projects)
  *
  * @param \PDO $pdo connection object
@@ -187,35 +154,159 @@ static function getfavoritebyfavoriteDate(\PDO $pdo, \DateTime $sunrisefavoriteD
 	}
 
 	/**
-	 * gets the Tweet by tweetId
+	 * inserts this favorite into mySQL
 	 *
 	 * @param \PDO $pdo PDO connection object
-	 * @param int $favoriteProductId tweet id to search for
-	 * @return favorite|null favorite found or null if not found
 	 * @throws \PDOException when mySQL related errors occur
-	 * @throws \TypeError when variables are not the correct data type
+	 * @throws \TypeError if $pdo is not a PDO connection object
 	 **/
-
 	public
-	static function getfavoritebyfavoriteProductId(\PDO $pdo, int $favoriteProductId): ?favorite {
-		if($favoriteProductId <= 0) {
-			throw(new \PDOException("tweet id is not positive"));
+	function insert(\PDO $pdo): void {
+		if($this->favoriteProfileId === null || $this->favoriteProductId === null) {
+			throw(new \PDOException("not a valid favorite"));
 		}
-		$query = "SELECT favoriteProductId, favoriteProfileId, favoriteDate, favoriteDate FROM favorite WHERE favoriteProductId = favoriteProductId";
+
+		$query = "INSERT INTO `favorite`(favoriteProfileId, favoriteProductId, favoriteDate) VALUES(:favoriteProfileId, :favoriteProductId, :favoriteDate)";
 		$statement = $pdo->prepare($query);
-		$parameters = ["" => $favoriteProductId];
+		$formattedDate = $this->favoriteDate->format("Y-m-d H:i:s");
+		$parameters = ["favoriteProfileId" => $this->favoriteProfileId, "favoriteProduct" => $this->favoriteProductId, "favoriteDate" => $formattedDate];
+		$statement->execute($parameters);
+	}
+
+	/**
+	 * deletes this favorite from mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public
+	function delete(\PDO $pdo): void {
+		if($this->favoriteProfileId === null || $this->favoritezproductId === null) {
+			throw(new \PDOException("not a valid favorite"));
+		}
+		$query = "DELETE FROM `favorite` WHERE favoriteProfileId = :favoriteProfileId AND favoriteProductId = :favoriteProcuctId";
+		$statement = $pdo->prepare($query);
+		$parameters = ["favoriteProfileId" => $this->favoriteProfileId, "favoriteProductId" => $this->favoritezproductId];
+		$statement->execute($parameters);
+	}
+
+	/**
+	 * gets the Like by product id and profile id
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param int $favoriteProfileId profile id to search for
+	 * @param int $favoriteProductId tweet id to search for
+	 * @return favorite|null Like found or null if not found
+	 */
+	public
+	static function getLikeByLikeTweetIdAndLikeProfileId(\PDO $pdo, int favoriteProfileId, int $favoriteProductId): ?favorite {
+		// sanitize the tweet id and profile id before searching
+		if($favoriteProfileId <= 0) {
+			throw(new \PDOException("profile id is not positive"));
+		}
+		if($favoriteProductId <= 0) {
+			throw(new \PDOException("product id is not positive"));
+		}
+		// create query template
+		$query = "SELECT favoriteProfileId, favoriteProductId, favoriteDate FROM `favorite` WHERE favoriteProfileId = :favoriteProfileId AND favoriteProductId = :favoriteProductId";
+		$statement = $pdo->prepare($query);
+		$parameters = ["favoriteProfileId" => $favoriteProfileId, "favoriteProducttId" => $favoriteProductId];
 		$statement->execute($parameters);
 
-
 		try {
-			$favoriteProductId = null;
+			$favorite = null;
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
 			if($row !== false) {
-				$favorite = new favorite($row["favoriteProductId"], $row["favoriteProfileId"], $row["favoriteDate"]);
+				$like = new favorite($row["favoriteProfileId"], $row["favoriteProducttId"], $row["favoriteDate"]);
 			}
 		} catch(\Exception $exception) {
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
 		return ($favorite);
 	}
+
+
+	/**
+	 * gets the favorite by profile id
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param int $favoriteProfileId profile id to search for
+	 * @return \SplFixedArray SplFixedArray of Likes found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public
+	static function getfavoriteByfavoriteProfileId(\PDO $pdo, int $favoriteProfileId): \SPLFixedArray {
+		// sanitize the profile id
+		if($favoriteProfileId <= 0) {
+			throw(new \PDOException("profile id is not positive"));
+		}
+		// create query template
+		$query = "SELECT favoriteProfileId, favoriteProducttId, favoriteDate FROM `favorite` WHERE favoriteProfileId = :favoriteProfileId";
+		$statement = $pdo->prepare($query);
+		$parameters = ["favoriteProfileId" => $favoriteProfileId];
+		$statement->execute($parameters);
+		$favorite = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$favorites = new favorite($row["favoriteProfileId"], $row["favoriteProductId"], $row["favoriteDate"]);
+				$favorites[$favorites->key()] = $favorite;
+				$favorites->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return ($favorites);
+	}
+
+	/**
+	 * gets the Like by product it id
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param int $favoriteProductId product id to search for
+	 * @return \SplFixedArray array of Likes found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public
+	static function getfavoriteByfavoriteProductId(\PDO $pdo, int $favoriteProductId): \SplFixedArray {
+		// sanitize the tweet id
+		$favoriteProductId = filter_var($favoriteProductId, FILTER_VALIDATE_INT);
+		if($favoriteProductId <= 0) {
+			throw(new \PDOException("favorite id is not positive"));
+		}
+		// create query template
+		$query = "SELECT favoriteProfileId, favoriteProducttId, favoriteDate FROM `favorite` WHERE favoriteProductId = :favoriteProductId";
+		$statement = $pdo->prepare($query);
+		$parameters = ["favoriteProductId" => $favoriteProductId];
+		$statement->execute($parameters);
+		$favorites = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$favorite = new Like($row["likeProfileId"], $row["likeTweetId"], $row["likeDate"]);
+				$favorites[$favorites->key()] = $favorite;
+				$favorites->next();
+			} catch(\Exception $exception) {
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return ($favorites);
+	}
+
+	/**
+	 * formats the state variables for JSON serialization
+	 *
+	 * @return array resulting state variables to serialize
+	 **/
+	public
+	function jsonSerialize() {
+		$fields = get_object_vars($this);
+		$fields["favoriteDate"] = round(floatval($this->favoriteDate->format("U.u")) * 1000);
+		return ($fields);
+	}
+}
