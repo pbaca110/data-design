@@ -285,3 +285,15 @@ function __construct(?int $newProductId, ?int $newproductName, string $newproduc
 		}
 		return($products);
 	}
+	/**
+	 * formats the state variables for JSON serialization
+	 *
+	 * @return array resulting state variables to serialize
+	 **/
+	public function jsonSerialize() {
+		$fields = get_object_vars($this);
+		//format the date so that the front end can consume it
+		$fields["productDate"] = round(floatval($this->productDate->format("U.u")) * 1000);
+		return($fields);
+	}
+}
