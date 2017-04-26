@@ -1,6 +1,13 @@
 <?php
 require_once("autoload.php");
-class product implements \JsonSerializable {
+
+/**
+ * write class docblock
+ *
+ **/
+class Product implements \JsonSerializable {
+
+	use ValidateDate;
 
 	/**
 	 * @var int $productId
@@ -28,10 +35,34 @@ class product implements \JsonSerializable {
 	private $productDate;
 
 	/**
+	 * constructor for this Tweet
+	 *
+	 * @param int|null $newProductId id of this product or null if a new productId
+	 * @param string $newproductName name of the  product that sent this product
+	 * @param string $newProductDescription string containing actual product data
+	 * @param \DateTime|string|null $newProductDate date and time Tweet was sent or null if set to current date and time
+	 * @throws \InvalidArgumentException if data types are not valid
+	 * @throws \RangeException if data values are out of bounds (e.g., strings too long, negative integers)
+	 * @throws \TypeError if data types violate type hints
+	 * @throws \Exception if some other exception occurs
+	 **/
+	public function __construct(?int $newProductId, string $newProductName, string $newProductDescription, $newProductDate = null) {
+		try {
+			$this->setproductId($newProductId);
+			$this->setproductName($newProductName);
+			$this->setproductDescription($newProductDescription);
+			$this->setproductDate($newProductDate);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			$exceptionType = get_class($exception);
+			throw (new $exceptionType($exception->getMessage(),0, $exception));
+		}
+	}
+
+	/**
 	 * accessor
 	 * @return
 	 **/
-	public function getproductId(): void {
+	public function getproductId(): ?int {
 		return ($this->productId);
 	}
 
@@ -41,24 +72,23 @@ class product implements \JsonSerializable {
 	 * @throws |RangeException if $newproductId is not positive
 	 * @throws |TypeError if $newproductId is not an integer
 	 **/
-	public function setproductId(?int $newproductId): void {
-		if($newproductId === null) {
+	public function setProductId(?int $newProductId): void {
+		if($newProductId === null) {
 			$this->productId = null;
 			return;
 		}
 
-		if($newproductId <= 0) {
+		if($newProductId <= 0) {
 			throw(new\RangeException("product id is not positive"));
 		}
-		$this->profileId = $newproductId;
+		$this->profileId = $newProductId;
 	}
 
 	/**
 	 * accessor
 	 * @return \DateTime value of product date
 	 **/
-	public
-	function getproductDate(): \DateTime {
+	public function getProductDate(): \DateTime {
 		return ($this->productDate);
 	}
 
@@ -67,14 +97,13 @@ class product implements \JsonSerializable {
 	 * @throws \InvalidArgumentException if $newproductDate is not a valid object or string
 	 * @throws \RangeException if $productDate is a date that does not exist
 	 **/
-	public
-	function setproductDate($newproductDate = null): void {
-		if($newproductDate === null) {
+	public function setProductDate($newProductDate = null): void {
+		if($newProductDate === null) {
 			$this->productDate = new \DateTime();
 			return;
 		}
 		try {
-			$newproductDate = self::validDateTime($newproductDate);
+			$newproductDate = self::validateDateTime($newProductDate);
 		} catch(\InvalidArgumentException | \RangeException $exception) {
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
@@ -86,93 +115,63 @@ class product implements \JsonSerializable {
 	 * accessor
 	 * @return
 	 */
-	public
-	function getproductDescription(): string {
+	public function getproductDescription(): string {
 		return ($this->productDescription);
 	}
+
 	/**
 	 * mutator
-	 */
-	/**@param |DateTime|string|null $newproductDescription product date as a DateTime object or string (or null to load the current time)
+	 * @param |DateTime|string|null $newproductDescription product date as a DateTime object or string (or null to load the current time)
 	 * @throws \InvalidArgumentException if $newproductDescription is not a valid object or string
 	 * @throws \RangeException if $productDescription is a date that does not exist
 	 **/
-	public
-	function setproductDescription(string $newproductDescription): void {
-		{
-			$newproductDescription = trim($newproductDescription);
-			$newproductDescription = filter_var($newproductDescription, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-			if(empty($newproductDescription) === true) {
-				throw(new \InvalidArgumentException("productDescription content is empty or insecure"));
-			}
-			if(strlen($newproductDescription) > 140) {
-				throw(new \RangeException("productDescription content is too large"));
-			}
-			$this->productDescription = $newproductDescription;
+	public function setproductDescription(string $newproductDescription): void {
+		$newproductDescription = trim($newproductDescription);
+		$newproductDescription = filter_var($newproductDescription, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($newproductDescription) === true) {
+			throw(new \InvalidArgumentException("productDescription content is empty or insecure"));
 		}
+		if(strlen($newproductDescription) > 140) {
+			throw(new \RangeException("productDescription content is too large"));
+		}
+		$this->productDescription = $newproductDescription;
 	}
 
 	/**
 	 * accessor
 	 * @return
-	 */
-
-	public
-	function getproductName(): string {
+	 **/
+	public function getproductName(): string {
 		return ($this->productName);
 	}
 
+	/**
+	 *
+	 **/
+	public function setProductName(string $newproductName): void {
+		$newproductName = trim($newproductName);
+		$newproductName = filter_var($newproductName, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 
-	public
-	function setproductName(string $newproductName): void {
-		{
-			$newproductName = trim($newproductName);
-			$newproductName = filter_var($newproductName, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-			if(empty($newproductName) === true) {
-				throw(new \InvalidArgumentException("productName content is empty or insecure"));
-			}
-			if(strlen($newproductName) > 140) {
-				throw(new \RangeException("productName content is too large"));
-			}
-			$this->$newproductName = $newproductName;
+		if(empty($newproductName) === true) {
+			throw(new \InvalidArgumentException("productName content is empty or insecure"));
 		}
-	}
-}
 
-
-/**
- * constructor for this Tweet
- *
- * @param int|null $newProductId id of this product or null if a new productId
- * @param string $newproductName name of the  product that sent this product
- * @param string $newProductDescription string containing actual product data
- * @param \DateTime|string|null $newProductDate date and time Tweet was sent or null if set to current date and time
- * @throws \InvalidArgumentException if data types are not valid
- * @throws \RangeException if data values are out of bounds (e.g., strings too long, negative integers)
- * @throws \TypeError if data types violate type hints
- * @throws \Exception if some other exception occurs
- **/
-public
-function __construct(?int $newProductId, ?int $newproductName, string $newproductDescription, $newproductDate = null) {
-	try {
-		$this->setproductId($newProductId);
-		$this->setproductName($newproductName);
-		$this->setproductDescription($newproductDescription);
-		$this->setproductDate($newproductDate);
+		if(strlen($newproductName) > 140) {
+			throw(new \RangeException("productName content is too large"));
+		}
+		$this->$newproductName = $newproductName;
 	}
 
 	/**
-	 * gets the Tweet by productId
-	*
+	 * gets the Product by productId
+	 *
 	 * @param \PDO $pdo PDO connection object
-	* @param int $productId tweet id to search for
+	 * @param int $productId tweet id to search for
 	 * @return product|null Tweet found or null if not found
-	* @throws \PDOException when mySQL related errors occur
-	* @throws \TypeError when variables are not the correct data type
-	**/
-
- **/
-	public static function getproductByproductId(\PDO $pdo, int $productId) : ?product {
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public function getproductByproductId(\PDO $pdo, int $productId): ?Product {
 		if($productId <= 0) {
 			throw(new \PDOException("product id is not positive"));
 		}
@@ -181,7 +180,7 @@ function __construct(?int $newProductId, ?int $newproductName, string $newproduc
 		$parameters = ["productId" => $productId];
 		$statement->execute($parameters);
 		try {
-			$product= null;
+			$product = null;
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
 			if($row !== false) {
@@ -190,17 +189,19 @@ function __construct(?int $newProductId, ?int $newproductName, string $newproduc
 		} catch(\Exception $exception) {
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
-		return($product);
+		return ($product);
 	}
 
-/**
- * inserts this product into mySQL
- *
- * @param \PDO $pdo PDO connection object
- * @throws \PDOException when mySQL related errors occur
- * @throws \TypeError if $pdo is not a PDO connection object
- **/
-	public function insert(\PDO $pdo) : void {
+
+	/**
+	 * inserts this product into mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public
+	function insert(\PDO $pdo): void {
 		if($this->productId !== null) {
 			throw(new \PDOException("not a new product"));
 		}
@@ -214,6 +215,8 @@ function __construct(?int $newProductId, ?int $newproductName, string $newproduc
 		// update the null tweetId with what mySQL just gave us
 		$this->productId = intval($pdo->lastInsertId());
 	}
+
+
 	/**
 	 * deletes this product from mySQL
 	 *
@@ -221,14 +224,15 @@ function __construct(?int $newProductId, ?int $newproductName, string $newproduc
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError if $pdo is not a PDO connection object
 	 **/
-	public function delete(\PDO $pdo) : void {
+	public
+	function delete(\PDO $pdo): void {
 		if($this->prodctId === null) {
 			throw(new \PDOException("unable to delete a product that does not exist"));
 		}
 		// create query template
 		$query = "DELETE FROM product WHERE productId = :productId";
 		$statement = $pdo->prepare($query);
-		$parameters = ["productId" => $this->prodctId];
+		$parameters = ["productId" => $this->productId];
 		$statement->execute($parameters);
 	}
 
@@ -239,13 +243,13 @@ function __construct(?int $newProductId, ?int $newproductName, string $newproduc
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError if $pdo is not a PDO connection object
 	 **/
-	public function update(\PDO $pdo) : void {
-		if($this->producttId === null) {
+	public function update(\PDO $pdo): void {
+		if($this->productId === null) {
 			throw(new \PDOException("unable to update a tweet that does not exist"));
 		}
-		$query = "UPDATE product SET productId = :productId, productDescription = :productDescription, producteDate = :productDate WHERE productDate = :productId";
+		$query = "UPDATE product SET productId = :productId, productDescription = :productDescription, productDate = :productDate WHERE productDate = :productId";
 		$statement = $pdo->prepare($query);
-		$formattedDate = $this->prductDate->format("Y-m-d H:i:s");
+		$formattedDate = $this->productDate->format("Y-m-d H:i:s");
 		$parameters = ["productId" => $this->productId, "productDescription" => $this->productDescription, "productDate" => $formattedDate, "productId" => $this->productId];
 		$statement->execute($parameters);
 	}
@@ -260,7 +264,7 @@ function __construct(?int $newProductId, ?int $newproductName, string $newproduc
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when variables are not the correct data type
 	 **/
-	public static function getproductByproductDescription(\PDO $pdo, string $productDescription) : \SPLFixedArray {
+	public static function getproductByproductDescription(\PDO $pdo, string $productDescription): \SPLFixedArray {
 		$productDescription = trim($productDescription);
 		$productDescription = filter_var($productDescription, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 		if(empty($productDescription) === true) {
@@ -275,16 +279,17 @@ function __construct(?int $newProductId, ?int $newproductName, string $newproduc
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$product = new Tweet($row["tweetId"], $row["tweetProfileId"], $row["tweetContent"], $row["tweetDate"]);
-				$products[S$products->key()] = $product;
+				$product = new product($row["productId"], $row["productName"], $row["productDescription"], $row["productDate"]);
+				$products[$products->key()] = $product;
 				$products->next();
 			} catch(\Exception $exception) {
 				// if the row couldn't be converted, rethrow it
 				throw(new \PDOException($exception->getMessage(), 0, $exception));
 			}
+			return ($products);
 		}
-		return($products);
 	}
+
 	/**
 	 * formats the state variables for JSON serialization
 	 *
@@ -294,6 +299,9 @@ function __construct(?int $newProductId, ?int $newproductName, string $newproduc
 		$fields = get_object_vars($this);
 		//format the date so that the front end can consume it
 		$fields["productDate"] = round(floatval($this->productDate->format("U.u")) * 1000);
-		return($fields);
+		return ($fields);
+
 	}
 }
+
+
