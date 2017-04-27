@@ -103,9 +103,9 @@ public
 function __construct(?int $newfavoriteProfileId, ?int $newfavoriteProductId, int $newfavoriteProductId, $newfavoriteDate = null) {
 	try {
 	}
-		$this->setfavoriteProfileId($newfavoriteProfileId);
-		$this->setfavoriteProductId($newfavoriteProductId);
-		$this->setfavoriteDate($newfavoriteDate);
+		$this->setfavoriteProfileId($newProfileId);
+		$this->setfavoriteProductId($newProductId);
+		$this->setfavoriteDate($newProductDate);
 	}
 
 
