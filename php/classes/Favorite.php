@@ -2,6 +2,8 @@
 require_once("autoload.php");
 
 class favorite implements \JsonSerializable {
+	use validateDate;
+
 
 	/**
 	 * @var int $favoriteProfileId
@@ -20,13 +22,38 @@ class favorite implements \JsonSerializable {
 	 **/
 	private $favoriteDate;
 
+	/**
+	 * constructor for this favorite
+	 *
+	 * @param int|null $newfavoriteProfileId id of this product or null if a new productId
+	 * @param int $newfavoriteProductId name of the  product that sent this product
+	 * @param \DateTime|string|null $newfavoriteDate date and time Tweet was sent or null if set to current date and time
+	 * @throws \InvalidArgumentException if data types are not valid
+	 * @throws \RangeException if data values are out of bounds (e.g., strings too long, negative integers)
+	 * @throws \TypeError if data types violate type hints
+	 * @throws \Exception if some other exception occurs
+	 **/
+
+	public function __construct(int $newfavoriteProfileId, int $newfavoriteProductId, $newfavoriteDate = null) {
+		// use the mutator methods to do the work for us!
+		try {
+			$this->setfavoriteProfileId($newfavoriteProfileId);
+			$this->setfavoriteProductId($newfavoriteProductId);
+			$this->setfavoriteDate($newfavoriteDate);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			// determine what exception type was thrown
+			$exceptionType = get_class($exception);
+			throw(new $exceptionType($exception->getMessage(), 0, $exception));
+		}
+	}
+
 
 	/**
-	 * accessor
-	 * @return
+	 * accessor method for profile id
+	 *
+	 * @return int value of profile id
 	 **/
-	public function getfavoriteProfileId(): void {
-
+	public function getfavoriteProfileId() : int {
 		return ($this->favoriteProfileId);
 	}
 
@@ -50,13 +77,13 @@ class favorite implements \JsonSerializable {
 	}
 
 	/**
-	 * accessor
-	 * @return
+	 * accessor method for tweet id
+	 *
+	 * @return int value of tweet id
 	 **/
-	public function getfavoriteProductId(): void {
+	public function getfavoriteProductId() : int {
 		return ($this->favoriteProductId);
 	}
-
 	/**
 	 * mutator
 	 * @param int|null $favoriteProductId new value of tweet
@@ -72,40 +99,33 @@ class favorite implements \JsonSerializable {
 
 	/**
 	 * accessor
-	 * @return \DateTime value of favoriteProductdate
+	 * @return \DateTime value of favoriteDate
 	 **/
-	public
-	function getfavoriteProductDate(): \DateTime {
-		return ($this->ProductDate);
+	public function getfavoriteDate(): \DateTime {
+		return ($this->favoriteDate());
 	}
-}
 
-try {
-	$newProductDate = self :validDateTime($newProductDate);
-} catch(\InvalidArgumentException | \RangeException $exception) {
-	$exceptionType = get_class($exception);
-	throw(new $exceptionType($exception->getMessage(), 0, $exception));
-}
-$this->$newProductDate = $newProductDate;
-
-/**
- * constructor for this favorite
- *
- * @param int|null $newfavoriteProfileId id of this product or null if a new productId
- * @param int $newfavoriteProductId name of the  product that sent this product
- * @param \DateTime|string|null $newfavoriteDate date and time Tweet was sent or null if set to current date and time
- * @throws \InvalidArgumentException if data types are not valid
- * @throws \RangeException if data values are out of bounds (e.g., strings too long, negative integers)
- * @throws \TypeError if data types violate type hints
- * @throws \Exception if some other exception occurs
- **/
-public
-function __construct(?int $newfavoriteProfileId, ?int $newfavoriteProductId, int $newfavoriteProductId, $newfavoriteDate = null) {
-	try {
-	}
-		$this->setfavoriteProfileId($newProfileId);
-		$this->setfavoriteProductId($newProductId);
-		$this->setfavoriteDate($newProductDate);
+	/**
+	 * mutator method for favorite date
+	 *
+	 * @param \DateTime|string|null $newfavoriteDate like date as a DateTime object or string (or null to load the current time)
+	 * @throws \InvalidArgumentException if $newfavoriteDate is not a valid object or string
+	 * @throws \RangeException if $newfavoriteDate is a date that does not exist
+	 **/
+	public function setfavoriteDate($newfavoriteDate): void {
+		// base case: if the date is null, use the current date and time
+		if($newfavoriteDate === null) {
+			$this->favoriteDate = new \DateTime();
+			return;
+		}
+		// store the like date using the ValidateDate trait
+		try {
+			$newLikeDate = self::validateDateTime($newfavoriteDate);
+		} catch(\InvalidArgumentException | \RangeException $exception) {
+			$exceptionType = get_class($exception);
+			throw(new $exceptionType($exception->getMessage(), 0, $exception));
+		}
+		$this->favoriteDate = $newfavoriteDate;
 	}
 
 
@@ -175,6 +195,7 @@ function getfavoritebyfavoriteDate(\PDO $pdo, \DateTime $sunrisefavoriteDate, \D
 		}
 
 
+
 		/**
 		 * deletes this favorite from mySQL
 		 *
@@ -184,12 +205,12 @@ function getfavoritebyfavoriteDate(\PDO $pdo, \DateTime $sunrisefavoriteDate, \D
 		 **/
 		public
 		function delete(\PDO $pdo): void {
-			if($this->favoriteProfileId === null || $this->favoritezproductId === null) {
+			if($this->favoriteProfileId === null || $this->favoriteProductId === null) {
 				throw(new \PDOException("not a valid favorite"));
 			}
 			$query = "DELETE FROM `favorite` WHERE favoriteProfileId = :favoriteProfileId AND favoriteProductId = :favoriteProcuctId";
 			$statement = $pdo->prepare($query);
-			$parameters = ["favoriteProfileId" => $this->favoriteProfileId, "favoriteProductId" => $this->favoritezproductId];
+			$parameters = ["favoriteProfileId" => $this->favoriteProfileId, "favoriteProductId" => $this->favoriteProductId];
 			$statement->execute($parameters);
 		}
 
@@ -201,8 +222,7 @@ function getfavoritebyfavoriteDate(\PDO $pdo, \DateTime $sunrisefavoriteDate, \D
 		 * @param int $favoriteProductId tweet id to search for
 		 * @return favorite|null Like found or null if not found
 		 */
-		public
-		function getLikeByLikeTweetIdAndLikeProfileId(\PDO $pdo, int favoriteProfileId, int $favoriteProductId): ?favorite {
+		public function getfavoriteByfavoriteProductIdAndfavoriteProfileId(\PDO $pdo, int $favoriteProfileId, int $favoriteProductId): ?favorite {
 			// sanitize the tweet id and profile id before searching
 			if($favoriteProfileId <= 0) {
 				throw(new \PDOException("profile id is not positive"));
@@ -221,13 +241,20 @@ function getfavoritebyfavoriteDate(\PDO $pdo, \DateTime $sunrisefavoriteDate, \D
 				$statement->setFetchMode(\PDO::FETCH_ASSOC);
 				$row = $statement->fetch();
 				if($row !== false) {
-					$like = new favorite($row["favoriteProfileId"], $row["favoriteProducttId"], $row["favoriteDate"]);
+					$favorite = new favorite($row["favoriteProfileId"], $row["favoriteProducttId"], $row["favoriteDate"]);
 				}
 			} catch(\Exception $exception) {
 				throw(new \PDOException($exception->getMessage(), 0, $exception));
 			}
-			return ($favorite);
-		}
+
+			/**
+			 * accessor method for profile id
+			 *
+			 * @return int value of profile id
+			 **/
+			public function getfavoriteProfileId() : int {
+				return ($this->favoriteProfileId);
+			}
 
 
 		/**
@@ -239,8 +266,7 @@ function getfavoritebyfavoriteDate(\PDO $pdo, \DateTime $sunrisefavoriteDate, \D
 		 * @throws \PDOException when mySQL related errors occur
 		 * @throws \TypeError when variables are not the correct data type
 		 **/
-		public
-		static function getfavoriteByfavoriteProfileId(\PDO $pdo, int $favoriteProfileId): \SPLFixedArray {
+		public function getfavoriteByfavoriteProfileId(\PDO $pdo, int $favoriteProfileId): \SPLFixedArray {
 			// sanitize the profile id
 			if($favoriteProfileId <= 0) {
 				throw(new \PDOException("profile id is not positive"));
@@ -262,11 +288,11 @@ function getfavoritebyfavoriteDate(\PDO $pdo, \DateTime $sunrisefavoriteDate, \D
 					throw(new \PDOException($exception->getMessage(), 0, $exception));
 				}
 
-				return ($favorites);
-			}
+				return ($favorite);}
+
 
 			/**
-			 * gets the Like by product it id
+			 * gets the Like by product id
 			 *
 			 * @param \PDO $pdo PDO connection object
 			 * @param int $favoriteProductId product id to search for
@@ -289,24 +315,28 @@ function getfavoritebyfavoriteDate(\PDO $pdo, \DateTime $sunrisefavoriteDate, \D
 				$statement->setFetchMode(\PDO::FETCH_ASSOC);
 				while(($row = $statement->fetch()) !== false) {
 					try {
-						$favorite = new Like($row["likeProfileId"], $row["likeTweetId"], $row["likeDate"]);
+						$favorite = new Favorite($row["favoriteProfileId"], $row["favoriteProductId"], $row["FavoriteDate"]);
 						$favorites[$favorites->key()] = $favorite;
 						$favorites->next();
 					} catch(\Exception $exception) {
 						throw(new \PDOException($exception->getMessage(), 0, $exception));
 					}
-				}
-				return ($favorites);
-			}
 
-			/**
-			 * formats the state variables for JSON serialization
-			 *
-			 * @return array resulting state variables to serialize
-			 **/
-			public
-			function jsonSerialize() {
-				$fields = get_object_vars($this);
-				$fields["favoriteDate"] = round(floatval($this->favoriteDate->format("U.u")) * 1000);
-				return ($fields);
-			}
+					return ($favorites);
+				}
+
+
+				/**
+				 * formats the state variables for JSON serialization
+				 *
+				 * @return array resulting state variables to serialize
+				 **/
+				public
+				function jsonSerialize() {
+					$fields = get_object_vars($this);
+					$fields["favoriteDate"] = round(floatval($this->favoriteDate->format("U.u")) * 1000);
+					return ($fields);
+				}
+
+
+
