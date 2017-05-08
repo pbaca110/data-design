@@ -16,7 +16,7 @@ $reply = new stdClass();
 $reply->status = 200;
 $reply->data = null;
 try {
-	$pdo = connectToEncryptedMySQL("/etc/apache2/capstone-mysql/ddctwitter.ini");
+	$pdo = connectToEncryptedMySQL("/etc/apache2/capstone-mysql/");
 	$method = array_key_exists("HTTP_X_HTTP_METHOD", $_SERVER) ? $_SERVER["HTTP_X_HTTP_METHOD"] : $_SERVER["REQUEST_METHOD"];
 	$id = filter_input(INPUT_GET, "id", FILTER_VALIDATE_INT);
 	$profileAtHandle = filter_input(INPUT_GET, "profileAtHandle", FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
